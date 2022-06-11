@@ -63,7 +63,7 @@ class Militant(models.Model):
     first_lastname = models.CharField(max_length=100)
     second_lastname = models.CharField(max_length=100)
     register_date = models.DateTimeField(default=datetime.now())
-    core = models.ForeignKey(
+    militant_core = models.ForeignKey(
         Core, related_name='militants', on_delete=models.CASCADE)
     militant_address = models.ForeignKey(Address, on_delete=models.CASCADE)
     declaration_date = models.ManyToManyField(
