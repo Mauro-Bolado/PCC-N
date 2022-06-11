@@ -1,10 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 
-import models
+from . import models
 
-def login(request):
+def login_page(request):
     return HttpResponse('NOT IMPLEMENTED')
 
-def militants(request):
-    
+def militants_page(request):
+    militants = models.Militant.objects.all()
+    HttpResponse(militants)

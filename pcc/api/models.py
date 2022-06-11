@@ -21,7 +21,7 @@ class Address(models.Model):
 
 class Core(models.Model):
     code = models.CharField(primary_key=True, max_length=5)
-    name = models.CharField(max_length=100)
+    core_name = models.CharField(max_length=100)
     district = models.PositiveIntegerField()
     political_area = models.CharField(max_length=100)
     sector = models.CharField(max_length=100)
@@ -59,22 +59,20 @@ class Militant(models.Model):
     Sex = models.TextChoices('Sex', 'Masculino Femenino')
     Status = models.TextChoices('Status', 'Casado/a Soltero/a Divorciado/a')
     ci = models.CharField(primary_key=True, max_length=11)
-    name = models.CharField(max_length=100)
+    militant_name = models.CharField(max_length=100)
     first_lastname = models.CharField(max_length=100)
     second_lastname = models.CharField(max_length=100)
-    # sexo = models.CharField(max_length=10, choices=Sexo.choices)
-    # estado = models.CharField(max_length=20, choices=Estado.choices)
     register_date = models.DateTimeField(default=datetime.now())
     core = models.ForeignKey(
         Core, related_name='militants', on_delete=models.CASCADE)
-    address = models.ForeignKey(Address, on_delete=models.CASCADE)
+    militant_address = models.ForeignKey(Address, on_delete=models.CASCADE)
     declaration_date = models.ManyToManyField(
         DeclarationDate, through='PaymentDeclaration')
 
     def payment_contribution(self):
         payments = Payment.objects.filter(
             payment_declaration__militant__ci=self.ci)
-        return Payment
+        return payments
 
     def payment_declaration(self):
         return PaymentDeclaration.objects.filter(militant=self.ci)
