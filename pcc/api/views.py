@@ -55,3 +55,64 @@ def debts_page(request):
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.data, status=400)
 
+@csrf_exempt
+def core_page(request):
+    if request.method == 'GET':
+        cores = Core.objects.all()
+        serializer = CoreSerializer(cores, many=True)
+        return JsonResponse(serializer.data, safe=False)
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = CoreSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
+
+@csrf_exempt
+def core_detail(request, pk):
+    try:
+        core = Militant.objects.get(pk=pk)
+    except:
+        return HttpResponse(status=404)  
+    if request.method == 'PUT':
+        data = JSONParser().parse(request)  
+        serializer = MilitantSerializer(core, data=data)
+        if(serializer.is_valid()):  
+            serializer.save() 
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
+    elif request.method == 'DELETE':
+        core.delete() 
+        return HttpResponse(status=204)
+
+@csrf_exempt
+def adress_page(request):
+    if request.method == 'GET':
+        addresses = Address.objects.all()
+        serializer = AddressSerializer(addresses, many=True)
+        return JsonResponse(serializer.data, safe=False)
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = AddressSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
+
+@csrf_exempt
+def address_detail(request, pk):
+    try:
+        adress = Address.objects.get(pk=pk)
+    except:
+        return HttpResponse(status=404)  
+    if request.method == 'PUT':
+        data = JSONParser().parse(request)  
+        serializer = AddressSerializer(adress, data=data)
+        if(serializer.is_valid()):  
+            serializer.save() 
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
+    elif request.method == 'DELETE':
+        adress.delete() 
+        return HttpResponse(status=204)
