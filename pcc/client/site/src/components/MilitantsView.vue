@@ -12,25 +12,23 @@
 </template>
 
 <script>
-import axios from 'axios';
+import "jquery/dist/jquery.min.js";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "datatables.net-dt/js/dataTables.dataTables";
+import "datatables.net-dt/css/jquery.dataTables.min.css";
+import axios from "axios";
+import $ from "jquery";
 export default {
-    data() {
-        return {
-            militants: ['']
-        }
-    },
-    methods: {
-        async getData() {
-            try {
-                const response = await axios.get('http://localhost:8000/pcc/militant/');
-                this.militants = response.data; 
-            } catch (error) {
-                console.log(error);
-            }
-        },
-    },
-    created() {
-        this.getData();
-    }
-}
+  mounted() {
+    axios.get("http://localhost:8000/pcc/militant/").then((response) => {
+      this.militants = response.data;
+      $("#datatable").DataTable();
+    });
+  },
+  data: function () {
+    return {
+      militants: [],
+    };
+  },
+};
 </script>
