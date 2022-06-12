@@ -1,4 +1,3 @@
-from anyio import maybe_async
 from django.shortcuts import render
 from django.http import HttpResponse
 from rest_framework.parsers import JSONParser
@@ -28,5 +27,14 @@ def militants_page(request):
 def debts_page(request):
     if request.method == 'GET':
         militants = Militant.objects.all()
-    return HttpResponse()
+        serializer = DebtsSerializer.serialize(militants, many=True)
+        return JsonResponse(serializer.data, safe=False)
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        militants = MilitantSerializer(data=data)
+        serializer = DebtsSerializer.serialize(militants, many=True)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.data, status=400)
 

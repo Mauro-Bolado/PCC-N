@@ -1,4 +1,3 @@
-from django.db import models as md
 from django.contrib import admin
 from .models import *
 

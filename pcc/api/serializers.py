@@ -1,85 +1,87 @@
-from pyexpat import model
-from attr import fields
-from matplotlib.pyplot import cla
-from pyrsistent import field
 from rest_framework import routers,serializers,viewsets
-from . import models
+from .models import *
 
 class MilitantSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = models.Militant
-        fields = [
-            'Sex', 'Status', 'ci', 'militant_name', 'first_lastname', 'second_lastname', 
-            'register_date', 'militant_core', 'militant_address', 'declaration_date'
-        ]
+        model = Militant
+        fields = '__all__'
+
+class DebtsSerializer(object):
+
+    @staticmethod
+    def serialize(militants, many=False):
+        indexs = []
+
+        for mil in militants:
+            share = mil.arrears_fees()
+            if len(share) > 0:
+                indexs.append(mil.ci)
+        
+        militants_filter = []
+        for item in indexs:
+            militants_filter.append(Militant.objects.get(pk=item))
+
+        militant_debts = MilitantSerializer(militants_filter, many=True)
+        meta = ['ci', 'militant_name', 'first_lastname', 'second_lastname']
+
+        index = 0
+        for mil in militants_filter:
+            share = mil.arrears_fees()
+            
+            for key in militant_debts.data[index].keys():
+                if key not in meta:
+                    del militant_debts.data[index][key]
+
+            militant_debts.data[index]['debts'] = share
+            index += 1
+
+        if many:
+            return militant_debts
+        return militant_debts.data[0]
+
 
 class AddressSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = models.Address
-        fields = [
-            'street', 'municipality', 'province', 'neighborhood', 'corner_or_ave', 'apto'
-        ]
+        model = Address
+        fields = '__all__'
+        
 
 class CoreSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = models.Core
-        fields = [
-            'code', 'core_name', 'district', 'political_area', 'sector', 'subordinate'
-        ]
+        model = Core
+        fields = '__all__'
 
 class DeclarationDateSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = models.DeclarationDate
-        fields = [
-            'declaration_date'
-        ]
+        model = DeclarationDate
+        fields = ['declaration_date']
 
 class PaymentDateSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = models.PaymentDate
-        fields = [
-            'payment_date'
-        ]
+        model = PaymentDate
+        fields = ['payment_date']
 
 class PaymentNormSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = models.PaymentNorm
-        fields = [
-            'lower_limit', 'upper_limit', 'percent', 'amount_to_pay'
-        ]
+        model = PaymentNorm
+        fields = '__all__'
 
 class PaymentDeclarationSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = models.PaymentDeclaration
-        fields = [
-            'salary', 'year', 'month', 'payment_norm', 'share', 
-            'declaration_date', 'payment_militant', 'payment_date'
-        ]
+        model = PaymentDeclaration
+        fields = '__all__'
 
 class PaymentSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = models.Payment
-        fields = [
-            'payment_declaration', 'payment_date', 'amount'
-        ]
+        model = Payment
+        fields = '__all__'
 
 class TaskSerilizer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = models.Task
-        fields = [
-            'task_name', 'orientation', 'militants'
-        ]
+        model = Task
+        fields = '__all__'
 
 class ParticipantSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = models.Participant
-        fields = [
-            'task_militant', 'participant_task', 'evaluator', 'evaluation'
-        ]
-
-class DebtSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = 'debt'
-        fields = [
-            'debt_date', 'debt_amount', 'owner_name', 'owner_flastname', 'owner_slastname'
-        ]
+        model = Participant
+        fields = '__all__'

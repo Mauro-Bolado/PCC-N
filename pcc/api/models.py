@@ -1,4 +1,5 @@
 import sys, inspect
+from dateutil.tz import UTC
 
 from django.db import models
 
@@ -84,8 +85,8 @@ class Militant(models.Model):
         real_decla = PaymentDeclaration.real_payment_declaration(self)
 
         start = self.register_date
-        end = datetime.now() - timedelta(days=datetime.now().day - 1)
-
+        end = datetime.now(UTC) - timedelta(days = datetime.now(UTC).day - 1)
+        
         payments = []
         i_decla = 0
 
@@ -94,7 +95,7 @@ class Militant(models.Model):
             share = {'year': dt.year, 'month': dt.month}
             if i_decla < len(real_decla) and date_compare(dt, real_decla[i_decla]):
                 payments = Payment.objects.filter(
-                    payment_declaration=real_decla[i_decla])
+                    payment_declaration = real_decla[i_decla])
 
                 sum = 0
                 for pay in payments:
@@ -143,7 +144,7 @@ class PaymentDeclaration(models.Model):
     @staticmethod
     def real_payment_declaration(ci):
         declarations_query = PaymentDeclaration.objects.filter(
-            militant=ci).order_by('-year', '-month')
+            payment_militant=ci).order_by('-year', '-month')
 
         declarations = []
 
