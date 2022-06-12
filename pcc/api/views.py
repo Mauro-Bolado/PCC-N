@@ -99,13 +99,15 @@
 #             serializer.save()
 #             return JsonResponse(serializer.data, status=201)
 #         return JsonResponse(serializer.errors, status=400)
+#     else:
+#         JsonResponse({'error': '{} method not implemented'.format(request.method)})
 
 # @csrf_exempt
 # def address_detail(request, pk):
 #     try:
 #         adress = Address.objects.get(pk=pk)
 #     except:
-#         return HttpResponse(status=404)  
+#         return HttpResponse(status=404)
 #     if request.method == 'PUT':
 #         data = JSONParser().parse(request)  
 #         serializer = AddressSerializer(adress, data=data)
@@ -135,7 +137,6 @@ from .models import Address, Militant, PaymentNorm, Core, Payment
 class Address_APIView(APIView):
     def get_queryset(self):
         return Address.objects.none
-#
 
     def post(self, request, format=None):
         serializer = AddressSerializer(request.data)
