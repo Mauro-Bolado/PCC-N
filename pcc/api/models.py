@@ -158,7 +158,7 @@ class PaymentDeclaration(models.Model):
 
     class Meta:
         db_table = 'payment_declaration'
-        unique_together = (('declaration_date', 'militant'))
+        unique_together = (('declaration_date', 'payment_militant'))
 
     def __str__(self) -> str:
         return self.payment_militant.name + " salary of " + str(self.salary)
@@ -195,7 +195,7 @@ class Participant(models.Model):
 
     class Meta:
         db_table = 'participant'
-        unique_together = (('militant', 'task'))
+        unique_together = (('task_militant', 'participant_task'))
 
     def __str__(self) -> str:
         return self.task_militant.name + ' ' + self.task.namels
