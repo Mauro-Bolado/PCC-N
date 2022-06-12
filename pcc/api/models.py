@@ -38,7 +38,7 @@ class Core(models.Model):
         return self.name
 
 class DeclarationDate(models.Model):
-    date = models.DateTimeField(primary_key=True)
+    declaration_date = models.DateTimeField(primary_key=True)
 
     def __str__(self) -> str:
         return self.date.__str__()
@@ -47,7 +47,7 @@ class DeclarationDate(models.Model):
         db_table = 'declaration_date'
 
 class PaymentDate(models.Model):
-    date = models.DateField(primary_key=True)
+    payment_date = models.DateField(primary_key=True)
 
     def __str__(self) -> str:
         return self.date.__str__()
@@ -134,7 +134,7 @@ class PaymentDeclaration(models.Model):
     share = models.PositiveIntegerField()
     declaration_date = models.ForeignKey(
         DeclarationDate, on_delete=models.CASCADE)
-    militant = models.ForeignKey(
+    payment_militant = models.ForeignKey(
         Militant, related_name='payment_declaration', on_delete=models.CASCADE)
     payment_date = models.ManyToManyField(PaymentDate, through='Payment')
 
@@ -161,7 +161,7 @@ class PaymentDeclaration(models.Model):
         unique_together = (('declaration_date', 'militant'))
 
     def __str__(self) -> str:
-        return self.militant.name + " salary of " + str(self.salary)
+        return self.payment_militant.name + " salary of " + str(self.salary)
 
 class Payment(models.Model):
     payment_declaration = models.ForeignKey(
@@ -177,7 +177,7 @@ class Payment(models.Model):
         unique_together = (('payment_declaration', 'payment_date'))
 
 class Task(models.Model):
-    name = models.CharField(max_length=100)
+    task_name = models.CharField(max_length=100)
     orientation = models.TextField()
     militants = models.ManyToManyField(Militant, through='Participant')
 
@@ -188,14 +188,14 @@ class Task(models.Model):
         return self.name + ' ' + self.orientation
 
 class Participant(models.Model):
-    militant = models.ForeignKey(Militant, on_delete=models.CASCADE)
-    task = models.ForeignKey(Task, on_delete=models.CASCADE)
-    Eval = models.TextChoices('Evaluación', 'Excelente Bien Majomeno Mal')
-    evaluation = models.CharField(max_length=10, choices=Eval.choices)
+    task_militant = models.ForeignKey(Militant, on_delete=models.CASCADE)
+    participant_task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    evaluator = models.TextChoices('Evaluación', 'Excelente Bien Majomeno Mal')
+    evaluation = models.CharField(max_length=10, choices=evaluator.choices)
 
     class Meta:
         db_table = 'participant'
         unique_together = (('militant', 'task'))
 
     def __str__(self) -> str:
-        return self.militant.name + ' ' + self.task.namels
+        return self.task_militant.name + ' ' + self.task.namels
