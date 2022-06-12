@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@jobinsjp/vue3-datatable": "^1.0.15"
+  }
+}
