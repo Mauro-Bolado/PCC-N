@@ -10,8 +10,6 @@
         row-key="name"
       />
     </div>
-    <!-- <button @click="getData()"></button> -->
-    <!-- <Table></Table> -->
   </q-page>
 </template>
 <script>
@@ -20,14 +18,8 @@ import axios from "src/boot/axios";
 
 export default defineComponent({
   name: "MilitantsPage",
-  // components: {
-  //   Table: () => import("components/DataTable.vue"),
-  // },
   data() {
     return {
-      // militants: [],
-      // columns: [],
-      // info: [],
       columns: [
         {
           name: "ci",
@@ -67,13 +59,6 @@ export default defineComponent({
   },
   methods: {
     getData() {
-      // try {
-      //   const response = await axios.get("http://localhost:8000/pcc/militant/");
-      //   this.militants = response.data;
-      //   this.format();
-      // } catch (error) {
-      //   console.error();
-      // }
       this.$axios
         .get("http://localhost:8000/pcc/militant/")
         .then((res) => {
