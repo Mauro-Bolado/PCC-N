@@ -71,7 +71,15 @@ class TaskSerilizer(serializers.HyperlinkedModelSerializer):
         ]
 
 class ParticipantSerializer(serializers.HyperlinkedModelSerializer):
-    model = models.Participant
-    fields = [
-        'task_militant', 'participant_task', 'evaluator', 'evaluation'
-    ]
+    class Meta:
+        model = models.Participant
+        fields = [
+            'task_militant', 'participant_task', 'evaluator', 'evaluation'
+        ]
+
+class DebtSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = 'debt'
+        fields = [
+            'debt_date', 'debt_amount', 'owner_name', 'owner_flastname', 'owner_slastname'
+        ]

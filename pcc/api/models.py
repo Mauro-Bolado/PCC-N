@@ -1,3 +1,5 @@
+import sys, inspect
+
 from django.db import models
 
 from dateutil import rrule
@@ -35,13 +37,13 @@ class Core(models.Model):
         db_table = 'core'
 
     def __str__(self) -> str:
-        return self.name
+        return self.core_name
 
 class DeclarationDate(models.Model):
     declaration_date = models.DateTimeField(primary_key=True)
 
     def __str__(self) -> str:
-        return self.date.__str__()
+        return self.declaration_date.__str__()
 
     class Meta:
         db_table = 'declaration_date'
@@ -50,7 +52,7 @@ class PaymentDate(models.Model):
     payment_date = models.DateField(primary_key=True)
 
     def __str__(self) -> str:
-        return self.date.__str__()
+        return self.payment_date.__str__()
 
     class Meta:
         db_table = 'payment_date'
@@ -110,7 +112,7 @@ class Militant(models.Model):
         return arrears_fees
 
     def __str__(self) -> str:
-        return self.name
+        return self.militant_name
 
     class Meta:
         db_table = 'Militant'
@@ -161,7 +163,7 @@ class PaymentDeclaration(models.Model):
         unique_together = (('declaration_date', 'payment_militant'))
 
     def __str__(self) -> str:
-        return self.payment_militant.name + " salary of " + str(self.salary)
+        return self.payment_militant.militant_name + " salary of " + str(self.salary)
 
 class Payment(models.Model):
     payment_declaration = models.ForeignKey(
@@ -185,7 +187,7 @@ class Task(models.Model):
         db_table = 'Task'
 
     def __str__(self) -> str:
-        return self.name + ' ' + self.orientation
+        return self.task_name + ' ' + self.orientation
 
 class Participant(models.Model):
     task_militant = models.ForeignKey(Militant, on_delete=models.CASCADE)
@@ -198,4 +200,11 @@ class Participant(models.Model):
         unique_together = (('task_militant', 'participant_task'))
 
     def __str__(self) -> str:
-        return self.task_militant.name + ' ' + self.task.namels
+        return self.task_militant.militant_name + ' ' + self.participant_task.task_name
+
+# def classes():
+#     modules = []
+#     for name, obj in inspect.getmembers(sys.modules[__name__]):
+#         if inspect.isclass(obj):
+#             modules.append(obj)
+#     return modules
