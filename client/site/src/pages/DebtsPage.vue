@@ -8,32 +8,9 @@
         :columns="columns"
         row-key="ci"
         :filter="filter"
-        selection="single"
-        v-model:selected="selected"
         :separator="separator"
       >
         <template v-slot:top>
-          <q-btn
-            color="primary"
-            :disable="loading"
-            label="Add row"
-            @click="addRow"
-          />
-          <q-btn
-            class="q-ml-sm"
-            color="primary"
-            :disable="loading"
-            label="Remove row"
-            @click="removeRow"
-          />
-          <q-btn
-            class="q-ml-sm"
-            color="primary"
-            :disable="loading"
-            label="Modificar"
-            @click="modifyRow"
-          />
-          <q-space />
           <q-input
             borderless
             dense
@@ -100,7 +77,6 @@ export default defineComponent({
   data() {
     return {
       columns,
-      selected: ref([]),
       loading: ref(false),
       filter: ref(""),
       rowCount: ref(10),
@@ -136,21 +112,22 @@ export default defineComponent({
           debts[0]["year"] +
           " ";
         let not_declared = "";
-        let sum = 0;
+        let payable_sum = 0;
+        let paid = 0;
         for (let index = 0; index < debts.length; index++) {
-          if (debts["amount"] == null)
+          if (debts["amount_payable"] == null)
             not_declared = ". Hay fechas sin salario declarado.";
-          else sum += debts["amount"];
+          else {
+            payable_sum += debts["amount_payable"];
+            paid += debts["amount_paid"];
+          }
         }
-        result += ". Total: " + sum;
+        result += ". Total: " + (payable_sum - paid);
         result += not_declared;
         post[mil].debts = result;
       }
       return post;
     },
-    addRow() {},
-    removeRow() {},
-    modifyRow() {},
   },
   created() {
     this.getData();
@@ -175,7 +152,7 @@ export default defineComponent({
 
   td:first-child
     /* bg color is important for td; just specify one */
-    background-color: $primary !important
+    background-color: $secondary !important
 
   tr th
     position: sticky
