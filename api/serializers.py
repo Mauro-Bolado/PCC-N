@@ -4,10 +4,12 @@ from django.contrib.auth.models import User, Group
 
 from api.models import Address, PaymentDate, Militant, Core, Payment, PaymentDeclaration, DeclarationDate
 
+
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
         fields = '__all__'
+
 
 class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -42,15 +44,25 @@ class MilitantSerializer(serializers.ModelSerializer):
                   'second_lastname', 'address']
 
 
+class CoreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Core
+        fields = ['code', 'name', 'district', 'political_area',
+                  'sector', 'subordinate']
+
+
 class MilitantDeclarationsSerializer(serializers.ModelSerializer):
     payment_declaration = PaymentDeclarationSerializer(
         many=True, read_only=True)
     address = AddressSerializer(read_only=True)
+    payment_declaration = PaymentDeclarationSerializer(
+        many=True, read_only=True)
+    core = CoreSerializer(read_only=True)
 
     class Meta:
         model = Militant
         fields = ['ci', 'name', 'first_lastname',
-                  'second_lastname', 'address', 'payment_declaration']
+                  'second_lastname', 'address', 'core', 'payment_declaration']
 
 
 class MilitantDebtsSerializer(object):
@@ -63,7 +75,7 @@ class MilitantDebtsSerializer(object):
             share = mil.arrears_fees()
             if len(share) > 0:
                 indexs.append(mil.ci)
-        
+
         militants_filter = []
         for item in indexs:
             militants_filter.append(Militant.objects.get(pk=item))
@@ -81,15 +93,6 @@ class MilitantDebtsSerializer(object):
         if many:
             return militant_debts.data
         return militant_debts.data[0]
-
-
-class CoreSerializer(serializers.ModelSerializer):
-    militants = MilitantSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Core
-        fields = ['code', 'name', 'district', 'political_area',
-                  'sector', 'subordinate', 'militants']
 
 
 class UserSerializer(serializers.ModelSerializer):

@@ -177,7 +177,7 @@ class Militant_APIView(APIView):
 
     def get(self, request, format=None, *args, **kwargs):
         militant = self.get_queryset()
-        serializer = MilitantSerializer(militant, many=True)
+        serializer = MilitantDeclarationsSerializer(militant, many=True)
         return JsonResponse(serializer.data, status=status.HTTP_200_OK, safe=False)
 
     def post(self, request, format=None):
@@ -195,7 +195,7 @@ class Militant_APIView_Detail(APIView):
 
     def get(self, request, pk, format=None):
         militant = self.get_queryset(pk)
-        serializer = MilitantSerializer(militant)
+        serializer = MilitantDeclarationsSerializer(militant)
         return JsonResponse(serializer.data, status=status.HTTP_200_OK, safe=False)
 
     def put(self, request, pk, format=None):
