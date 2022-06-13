@@ -1,3 +1,6 @@
+import sys, inspect
+from dateutil.tz import UTC
+
 from django.db import models
 
 from dateutil import rrule
@@ -38,7 +41,7 @@ class Core(models.Model):
         return militant
 
     def __str__(self) -> str:
-        return self.name
+        return self.core_name
 
     class Meta:
         db_table = 'core'    
@@ -48,7 +51,7 @@ class DeclarationDate(models.Model):
     date = models.DateTimeField(primary_key=True)
 
     def __str__(self) -> str:
-        return self.date.__str__()
+        return self.declaration_date.__str__()
 
     class Meta:
         db_table = 'declaration_date'
@@ -58,7 +61,7 @@ class PaymentDate(models.Model):
     date = models.DateField(primary_key=True)
 
     def __str__(self) -> str:
-        return self.date.__str__()
+        return self.payment_date.__str__()
 
     class Meta:
         db_table = 'payment_date'
@@ -93,8 +96,8 @@ class Militant(models.Model):
         real_decla = PaymentDeclaration.real_payment_declaration(self)
 
         start = self.register_date
-        end = datetime.now() - timedelta(days=datetime.now().day - 1)
-
+        end = datetime.now(UTC) - timedelta(days = datetime.now(UTC).day - 1)
+        
         payments = []
         i_decla = 0
 
@@ -103,7 +106,7 @@ class Militant(models.Model):
             share = {'year': dt.year, 'month': dt.month, 'amount_payable': None, 'amount_paid': None}
             if i_decla < len(real_decla) and date_compare(dt, real_decla[i_decla]):
                 payments = Payment.objects.filter(
-                    payment_declaration=real_decla[i_decla])
+                    payment_declaration = real_decla[i_decla])
 
                 sum = 0
                 for pay in payments:
@@ -121,7 +124,7 @@ class Militant(models.Model):
         return arrears_fees
 
     def __str__(self) -> str:
-        return self.name
+        return self.militant_name
 
     class Meta:
         db_table = 'Militant'
@@ -154,7 +157,7 @@ class PaymentDeclaration(models.Model):
     @staticmethod
     def real_payment_declaration(ci):
         declarations_query = PaymentDeclaration.objects.filter(
-            militant=ci).order_by('-year', '-month')
+            payment_militant=ci).order_by('-year', '-month')
 
         declarations = []
 
@@ -175,7 +178,6 @@ class PaymentDeclaration(models.Model):
 
     def __str__(self) -> str:
         return self.militant.name + " salary of " + str(self.salary)
-
 
 class Payment(models.Model):
     payment_declaration = models.ForeignKey(
@@ -200,7 +202,7 @@ class Task(models.Model):
         db_table = 'Task'
 
     def __str__(self) -> str:
-        return self.name + ' ' + self.orientation
+        return self.task_name + ' ' + self.orientation
 
 
 class Participant(models.Model):
