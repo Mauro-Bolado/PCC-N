@@ -26,6 +26,13 @@
             label="Remove row"
             @click="removeRow"
           />
+          <q-btn
+            class="q-ml-sm"
+            color="primary"
+            :disable="loading"
+            label="Modificar"
+            @click="modifyRow"
+          />
           <q-space />
           <q-input
             borderless
@@ -143,6 +150,7 @@ export default defineComponent({
     },
     addRow() {},
     removeRow() {},
+    modifyRow() {},
   },
   created() {
     this.getData();

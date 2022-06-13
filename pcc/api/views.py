@@ -153,7 +153,7 @@ class Core_APIView(APIView):
     def get(self, request, format=None, *args, **kwargs):
         cores = self.get_queryset()
         serializer_cores = CoreSerializer(cores, many=True)
-        return JsonResponse(serializer_cores.data, status=status.HTTP_200_OK, safe=False)
+        return Response(serializer_cores.data, status=status.HTTP_200_OK)
 
     def post(self, request, format=None):
         serializer = CoreSerializer(data=request.data)

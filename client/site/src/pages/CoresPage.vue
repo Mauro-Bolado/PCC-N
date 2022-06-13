@@ -16,15 +16,22 @@
           <q-btn
             color="primary"
             :disable="loading"
-            label="Add row"
+            label="Agregar"
             @click="addRow"
           />
           <q-btn
             class="q-ml-sm"
             color="primary"
             :disable="loading"
-            label="Remove row"
+            label="Eliminar"
             @click="removeRow"
+          />
+          <q-btn
+            class="q-ml-sm"
+            color="primary"
+            :disable="loading"
+            label="Modificar"
+            @click="modifyRow"
           />
           <q-space />
           <q-input
@@ -49,35 +56,50 @@
 import { defineComponent } from "vue";
 import { ref } from "vue";
 import axios from "src/boot/axios";
+import MilitantsPageVue from "./MilitantsPage.vue";
 
 const columns = [
   {
-    name: "ci",
-    label: "No. Identidad",
+    name: "code",
+    label: "No. Núcleo",
     align: "left",
-    field: "ci",
+    field: "code",
     format: (val) => `${val}`,
     sortable: true,
   },
   {
-    name: "militant_name",
+    name: "core_name",
     align: "center",
     label: "Nombre",
-    field: "militant_name",
+    field: "core_name",
     sortable: true,
   },
   {
-    name: "first_lastname",
+    name: "district",
     align: "center",
-    label: "Primer Apellido",
-    field: "first_lastname",
+    label: "Distrito",
+    field: "district",
     sortable: true,
   },
   {
-    name: "second_lastname",
+    name: "political_area",
     align: "center",
-    label: "Segundo Apellido",
-    field: "second_lastname",
+    label: "Area Política",
+    field: "political_area",
+    sortable: true,
+  },
+  {
+    name: "sector",
+    align: "center",
+    label: "Sector",
+    field: "sector",
+    sortable: true,
+  },
+  {
+    name: "subordinate",
+    align: "center",
+    label: "Subordinado",
+    field: "subordinate",
     sortable: true,
   },
 ];
@@ -100,7 +122,7 @@ export default defineComponent({
   methods: {
     getData() {
       this.$axios
-        .get("http://localhost:8000/pcc/militant/")
+        .get("http://localhost:8000/pcc/core/")
         .then((res) => {
           this.rows = res.data;
           console.log(res);
@@ -111,6 +133,7 @@ export default defineComponent({
     },
     addRow() {},
     removeRow() {},
+    modifyRow() {},
   },
   created() {
     this.getData();
