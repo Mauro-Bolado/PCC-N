@@ -20,7 +20,26 @@
       behavior="desktop"
       elevated
     >
-      <!-- drawer content -->
+      <div class="q-pa-md" style="max-width: 350px">
+        <q-list bordered separator>
+          <q-item clickable v-ripple>
+            <q-item-section>
+              <a href="#/militant">
+                <q-item-label overline>MILITANTES</q-item-label>
+                <q-item-label>Item with caption</q-item-label>
+              </a>
+            </q-item-section>
+          </q-item>
+          <q-item clickable v-ripple>
+            <q-item-section>
+              <a href="#/debts">
+                <q-item-label overline>ATRASOS</q-item-label>
+                <q-item-label>Item with caption</q-item-label>
+              </a>
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </div>
     </q-drawer>
 
     <q-page-container>
