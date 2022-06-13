@@ -1,7 +1,7 @@
 <template>
   <q-page class="flex flex-center">
     <div class="q-pa-md">
-      <center><h4 style="color: #1a1b20">MILITANTES</h4></center>
+      <center><h4 style="color: #1a1b20">NUCLEOS</h4></center>
       <q-table
         class="my-sticky-header-column-table"
         :rows="rows"

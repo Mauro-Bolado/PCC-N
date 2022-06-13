@@ -38,6 +38,14 @@
               </a>
             </q-item-section>
           </q-item>
+          <q-item clickable v-ripple>
+            <q-item-section>
+              <a href="#/cores">
+                <q-item-label overline>NUCLEOS</q-item-label>
+                <q-item-label>Item with caption</q-item-label>
+              </a>
+            </q-item-section>
+          </q-item>
         </q-list>
       </div>
     </q-drawer>
@@ -65,3 +73,25 @@ export default defineComponent({
   },
 });
 </script>
+
+<style>
+a:link {
+  color: #1976d2;
+  text-decoration: none;
+}
+
+a:visited {
+  color: #1976d2;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #1976d2;
+  text-decoration: none;
+}
+
+a:active {
+  color: #1976d2;
+  text-decoration: none;
+}
+</style>

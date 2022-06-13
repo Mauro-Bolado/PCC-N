@@ -1,64 +1,104 @@
 <template>
   <q-page class="flex flex-center">
     <div class="q-pa-md">
+      <center><h4 style="color: #1a1b20">ATRASOS</h4></center>
       <q-table
         class="my-sticky-header-column-table"
-        title="Atrasos"
-        :rows="posts"
+        :rows="rows"
         :columns="columns"
-        row-key="name"
-      />
+        row-key="ci"
+        :filter="filter"
+        selection="single"
+        v-model:selected="selected"
+        :separator="separator"
+      >
+        <template v-slot:top>
+          <q-btn
+            color="primary"
+            :disable="loading"
+            label="Add row"
+            @click="addRow"
+          />
+          <q-btn
+            class="q-ml-sm"
+            color="primary"
+            :disable="loading"
+            label="Remove row"
+            @click="removeRow"
+          />
+          <q-space />
+          <q-input
+            borderless
+            dense
+            debounce="300"
+            color="primary"
+            v-model="filter"
+          >
+            <template v-slot:append>
+              <q-icon name="search" />
+            </template>
+          </q-input>
+        </template>
+      </q-table>
+      <h5>Selected: {{ JSON.stringify(selected) }}</h5>
     </div>
-    <h5>{{ posts.debts }}</h5>
+    <div class="q-mt-md"></div>
   </q-page>
 </template>
 <script>
 import { defineComponent } from "vue";
+import { ref } from "vue";
 import axios from "src/boot/axios";
+
+const columns = [
+  {
+    name: "ci",
+    label: "No. Identidad",
+    align: "left",
+    field: "ci",
+    sortable: true,
+  },
+  {
+    name: "militant_name",
+    align: "center",
+    label: "Nombre",
+    field: "militant_name",
+    sortable: true,
+  },
+  {
+    name: "first_lastname",
+    align: "center",
+    label: "Primer Apellido",
+    field: "first_lastname",
+    sortable: true,
+  },
+  {
+    name: "second_lastname",
+    align: "center",
+    label: "Segundo Apellido",
+    field: "second_lastname",
+    sortable: true,
+  },
+  {
+    name: "debts",
+    align: "center",
+    label: "Atrasos",
+    field: "debts",
+    sortable: true,
+  },
+];
 
 export default defineComponent({
   name: "DebtsPage",
   data() {
     return {
-      columns: [
-        {
-          name: "ci",
-          label: "No. Identidad",
-          align: "left",
-          field: "ci",
-          sortable: true,
-        },
-        {
-          name: "militant_name",
-          align: "center",
-          label: "Nombre",
-          field: "militant_name",
-          sortable: true,
-        },
-        {
-          name: "first_lastname",
-          align: "center",
-          label: "Primer Apellido",
-          field: "first_lastname",
-          sortable: true,
-        },
-        {
-          name: "second_lastname",
-          align: "center",
-          label: "Segundo Apellido",
-          field: "second_lastname",
-          sortable: true,
-        },
-        {
-          name: "debts",
-          align: "center",
-          label: "Atrasos",
-          field: "debts",
-          sortable: true,
-        },
-      ],
-
-      posts: [],
+      columns,
+      selected: ref([]),
+      loading: ref(false),
+      filter: ref(""),
+      rowCount: ref(10),
+      rows: [],
+      separator: ref("cell"),
     };
   },
   mounted() {
@@ -69,8 +109,8 @@ export default defineComponent({
       this.$axios
         .get("http://localhost:8000/pcc/debts/")
         .then((res) => {
-          this.posts = res.data;
-          this.posts = this.giveFormat(this.posts);
+          this.rows = res.data;
+          this.rows = this.giveFormat(this.rows);
           console.log(res);
         })
         .catch((err) => {
@@ -83,7 +123,7 @@ export default defineComponent({
       for (let mil = 0; mil < post.length; mil++) {
         let debts = post[mil]["debts"];
         result =
-          "Fecha más antigua: mes: " +
+          "Atraso más antiguo: mes: " +
           debts[0]["month"] +
           " año: " +
           debts[0]["year"] +
@@ -101,6 +141,8 @@ export default defineComponent({
       }
       return post;
     },
+    addRow() {},
+    removeRow() {},
   },
   created() {
     this.getData();
@@ -109,24 +151,31 @@ export default defineComponent({
 </script>
 
 <style lang="sass">
+.q-checkbox__inner
+  color: $accent
+
+.text-grey-8
+  color: $accent
+
 .my-sticky-header-column-table
   /* height or max-height is important */
-  height: 310px
+  max-height: 500px
 
   /* specifying max-width so the example can
     highlight the sticky column on any browser window */
-  max-width: 600px
+  max-width: 100%
 
   td:first-child
     /* bg color is important for td; just specify one */
-    background-color: #c1f4cd !important
+    background-color: $primary !important
 
   tr th
     position: sticky
     /* higher than z-index for td below */
     z-index: 2
     /* bg color is important; just specify one */
-    background: #fff
+    background: $primary
+    color: #fff
 
   /* this will be the loading indicator */
   thead tr:last-child th
