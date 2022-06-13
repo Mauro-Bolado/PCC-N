@@ -70,7 +70,7 @@ export default defineComponent({
         .get("http://localhost:8000/pcc/debts/")
         .then((res) => {
           this.posts = res.data;
-          this.posts = this.giveFormat();
+          this.posts = this.giveFormat(this.posts);
           console.log(res);
         })
         .catch((err) => {
@@ -78,33 +78,28 @@ export default defineComponent({
         });
     },
 
-    giveFormat() {
-      let debts = this.posts[this.posts.length - 1]["debts"];
+    giveFormat(post) {
       let result = "";
-      result.join(
-        "Fecha más antigua, mes: " +
-          debts["year"] +
+      for (let mil = 0; mil < post.length; mil++) {
+        let debts = post[mil]["debts"];
+        result =
+          "Fecha más antigua: mes: " +
+          debts[0]["month"] +
           " año: " +
-          debts["month"] +
-          " "
-      );
-      let not_declared = "";
-      let sum = 0;
-      for (let index = 0; index < debts.length; index++) {
-        if (debts["amount"] == null)
-          not_declared.join(
-            "Este salario," +
-              "mes: " +
-              debts["year"] +
-              " año: " +
-              debts["month"] +
-              " "
-          );
-        else sum += debts["amount"];
+          debts[0]["year"] +
+          " ";
+        let not_declared = "";
+        let sum = 0;
+        for (let index = 0; index < debts.length; index++) {
+          if (debts["amount"] == null)
+            not_declared = ". Hay fechas sin salario declarado.";
+          else sum += debts["amount"];
+        }
+        result += ". Total: " + sum;
+        result += not_declared;
+        post[mil].debts = result;
       }
-      result.join("total: " + sum + " ");
-      result.join(not_declared);
-      return (this.posts.debts = result);
+      return post;
     },
   },
   created() {
