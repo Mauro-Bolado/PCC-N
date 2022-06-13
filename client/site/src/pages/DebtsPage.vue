@@ -1,6 +1,5 @@
 <template>
   <q-page class="flex flex-center">
-    <h1>{{ militants }}</h1>
     <div class="q-pa-md">
       <q-table
         class="my-sticky-header-column-table"
@@ -10,6 +9,7 @@
         row-key="name"
       />
     </div>
+    <h5>{{ posts.debts }}</h5>
   </q-page>
 </template>
 <script>
@@ -70,6 +70,7 @@ export default defineComponent({
         .get("http://localhost:8000/pcc/debts/")
         .then((res) => {
           this.posts = res.data;
+          this.posts = this.giveFormat();
           console.log(res);
         })
         .catch((err) => {
@@ -77,11 +78,33 @@ export default defineComponent({
         });
     },
 
-    format() {
-      for (let index = 0; index < this.militants.length; index++) {
-        this.columns = this.militants[index].keys;
-        this.info = this.militants[index].values;
+    giveFormat() {
+      let debts = this.posts[this.posts.length - 1]["debts"];
+      let result = "";
+      result.join(
+        "Fecha más antigua, mes: " +
+          debts["year"] +
+          " año: " +
+          debts["month"] +
+          " "
+      );
+      let not_declared = "";
+      let sum = 0;
+      for (let index = 0; index < debts.length; index++) {
+        if (debts["amount"] == null)
+          not_declared.join(
+            "Este salario," +
+              "mes: " +
+              debts["year"] +
+              " año: " +
+              debts["month"] +
+              " "
+          );
+        else sum += debts["amount"];
       }
+      result.join("total: " + sum + " ");
+      result.join(not_declared);
+      return (this.posts.debts = result);
     },
   },
   created() {
