@@ -6,7 +6,10 @@ from django.db import models
 from dateutil import rrule
 from datetime import datetime, timedelta
 
+from sklearn import neighbors
+
 from .utils import date_compare
+
 
 class Address(models.Model):
     street = models.CharField(max_length=100)
@@ -18,13 +21,16 @@ class Address(models.Model):
 
     def __str__(self) -> str:
         return '{} {} {} {}'.format(self.province, self.street, self.municipality, self.corner_or_ave)
-    
+
     class Meta:
         db_table = 'address'
+        # unique_together = ['street', 'municipality',
+        #                    'province', 'neighborhood', 'corner_or_ave', 'apto']
+
 
 class Core(models.Model):
     code = models.CharField(primary_key=True, max_length=5)
-    core_name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
     district = models.PositiveIntegerField()
     political_area = models.CharField(max_length=100)
     sector = models.CharField(max_length=100)
@@ -34,14 +40,15 @@ class Core(models.Model):
         militant = Militant.objects.filter(core=self.code)
         return militant
 
-    class Meta:
-        db_table = 'core'
-
     def __str__(self) -> str:
         return self.core_name
 
+    class Meta:
+        db_table = 'core'    
+
+
 class DeclarationDate(models.Model):
-    declaration_date = models.DateTimeField(primary_key=True)
+    date = models.DateTimeField(primary_key=True)
 
     def __str__(self) -> str:
         return self.declaration_date.__str__()
@@ -49,8 +56,9 @@ class DeclarationDate(models.Model):
     class Meta:
         db_table = 'declaration_date'
 
+
 class PaymentDate(models.Model):
-    payment_date = models.DateField(primary_key=True)
+    date = models.DateField(primary_key=True)
 
     def __str__(self) -> str:
         return self.payment_date.__str__()
@@ -58,24 +66,27 @@ class PaymentDate(models.Model):
     class Meta:
         db_table = 'payment_date'
 
+
 class Militant(models.Model):
     Sex = models.TextChoices('Sex', 'Masculino Femenino')
     Status = models.TextChoices('Status', 'Casado/a Soltero/a Divorciado/a')
     ci = models.CharField(primary_key=True, max_length=11)
-    militant_name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
     first_lastname = models.CharField(max_length=100)
     second_lastname = models.CharField(max_length=100)
+    # sexo = models.CharField(max_length=10, choices=Sexo.choices)
+    # estado = models.CharField(max_length=20, choices=Estado.choices)
     register_date = models.DateTimeField(default=datetime.now())
-    militant_core = models.ForeignKey(
+    core = models.ForeignKey(
         Core, related_name='militants', on_delete=models.CASCADE)
-    militant_address = models.ForeignKey(Address, on_delete=models.CASCADE)
+    address = models.ForeignKey(Address, on_delete=models.CASCADE)
     declaration_date = models.ManyToManyField(
         DeclarationDate, through='PaymentDeclaration')
 
     def payment_contribution(self):
         payments = Payment.objects.filter(
             payment_declaration__militant__ci=self.ci)
-        return payments
+        return Payment
 
     def payment_declaration(self):
         return PaymentDeclaration.objects.filter(militant=self.ci)
@@ -92,7 +103,7 @@ class Militant(models.Model):
 
         for dt in rrule.rrule(rrule.MONTHLY, dtstart=start, until=end):
             backwardness = True
-            share = {'year': dt.year, 'month': dt.month}
+            share = {'year': dt.year, 'month': dt.month, 'amount_payable': None, 'amount_paid': None}
             if i_decla < len(real_decla) and date_compare(dt, real_decla[i_decla]):
                 payments = Payment.objects.filter(
                     payment_declaration = real_decla[i_decla])
@@ -118,6 +129,7 @@ class Militant(models.Model):
     class Meta:
         db_table = 'Militant'
 
+
 class PaymentNorm(models.Model):
     lower_limit = models.PositiveIntegerField(primary_key=True)
     upper_limit = models.PositiveIntegerField()
@@ -128,6 +140,7 @@ class PaymentNorm(models.Model):
         db_table = 'payment_norm'
         unique_together = (('lower_limit', 'upper_limit'))
 
+
 class PaymentDeclaration(models.Model):
     salary = models.PositiveIntegerField()
     year = models.PositiveIntegerField()
@@ -137,7 +150,7 @@ class PaymentDeclaration(models.Model):
     share = models.PositiveIntegerField()
     declaration_date = models.ForeignKey(
         DeclarationDate, on_delete=models.CASCADE)
-    payment_militant = models.ForeignKey(
+    militant = models.ForeignKey(
         Militant, related_name='payment_declaration', on_delete=models.CASCADE)
     payment_date = models.ManyToManyField(PaymentDate, through='Payment')
 
@@ -161,10 +174,10 @@ class PaymentDeclaration(models.Model):
 
     class Meta:
         db_table = 'payment_declaration'
-        unique_together = (('declaration_date', 'payment_militant'))
+        # unique_together = ['declaration_date', 'militant', 'id']
 
     def __str__(self) -> str:
-        return self.payment_militant.militant_name + " salary of " + str(self.salary)
+        return self.militant.name + " salary of " + str(self.salary)
 
 class Payment(models.Model):
     payment_declaration = models.ForeignKey(
@@ -179,8 +192,9 @@ class Payment(models.Model):
         db_table = 'payment'
         unique_together = (('payment_declaration', 'payment_date'))
 
+
 class Task(models.Model):
-    task_name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
     orientation = models.TextField()
     militants = models.ManyToManyField(Militant, through='Participant')
 
@@ -190,22 +204,16 @@ class Task(models.Model):
     def __str__(self) -> str:
         return self.task_name + ' ' + self.orientation
 
+
 class Participant(models.Model):
-    task_militant = models.ForeignKey(Militant, on_delete=models.CASCADE)
-    participant_task = models.ForeignKey(Task, on_delete=models.CASCADE)
-    evaluator = models.TextChoices('Evaluación', 'Excelente Bien Majomeno Mal')
-    evaluation = models.CharField(max_length=10, choices=evaluator.choices)
+    militant = models.ForeignKey(Militant, on_delete=models.CASCADE)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    Eval = models.TextChoices('Evaluación', 'Excelente Bien Majomeno Mal')
+    evaluation = models.CharField(max_length=10, choices=Eval.choices)
 
     class Meta:
         db_table = 'participant'
-        unique_together = (('task_militant', 'participant_task'))
+        unique_together = (('militant', 'task'))
 
     def __str__(self) -> str:
-        return self.task_militant.militant_name + ' ' + self.participant_task.task_name
-
-# def classes():
-#     modules = []
-#     for name, obj in inspect.getmembers(sys.modules[__name__]):
-#         if inspect.isclass(obj):
-#             modules.append(obj)
-#     return modules
+        return self.militant.name + ' ' + self.task.namels
