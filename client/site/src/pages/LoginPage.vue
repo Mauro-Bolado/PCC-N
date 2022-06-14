@@ -1,16 +1,17 @@
 <template>
-  <div class="q-pa-md" style="max-width: 300px">
+  <div class="pa-md" style="max-width: 1000px">
+    <img class="ico" src="../../public/from_site_logo.png" alt="" />
+    <h5 class="mssg">Por favor inicia sesión ...</h5>
     <form
       @submit.prevent.stop="onSubmit"
       @reset.prevent.stop="onReset"
-      class="q-gutter-md"
+      class="gutter-md"
     >
       <q-input
         ref="nameRef"
         filled
         v-model="name"
         label="Nombre *"
-        hint="Nombre de Usuario"
         lazy-rules
         :rules="nameRules"
       />
@@ -20,7 +21,7 @@
         filled
         type="password"
         v-model="password"
-        label="Your password *"
+        label="Contraseña *"
         lazy-rules
         :rules="passwordRules"
       />
@@ -56,13 +57,15 @@ export default {
     return {
       name,
       nameRef,
-      nameRules: [(val) => (val && val.length > 0) || "Please type something"],
+      nameRules: [
+        (val) => (val && val.length > 0) || "Por favor escribe tu nombre.",
+      ],
 
       password,
       passwordRef,
       passwordRules: [
-        (val) => (val !== null && val !== "") || "Please type your password",
-        (val) => (val > 0 && val < 100) || "Please type a real password",
+        (val) =>
+          (val !== null && val !== "") || "Por favor escribe tu contraseña.",
       ],
 
       onSubmit() {
@@ -91,3 +94,18 @@ export default {
   },
 };
 </script>
+
+<style>
+.gutter-md {
+  margin-left: 45%;
+  margin-top: 0em;
+  display: block;
+}
+.ico {
+  margin-left: 670px;
+  margin-top: 3em;
+}
+.mssg {
+  margin-left: 600px;
+}
+</style>

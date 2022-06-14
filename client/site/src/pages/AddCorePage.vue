@@ -1,9 +1,9 @@
 <template>
-  <div class="q-pa-md" style="max-width: 300px">
+  <div class="q-pa-md" style="max-width: 1000px">
     <form
       @submit.prevent.stop="onSubmit"
       @reset.prevent.stop="onReset"
-      class="q-gutter-md"
+      class="gutter-md"
     >
       <q-input
         ref="codeRef"
@@ -134,3 +134,10 @@ export default {
   },
 };
 </script>
+
+<style>
+.gutter-md {
+  margin-top: 0em;
+  margin-left: 45%;
+}
+</style>
