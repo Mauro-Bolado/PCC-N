@@ -1,5 +1,6 @@
 <template>
-  <div class="q-pa-md" style="max-width: 1000px">
+  <div class="q-pa-md">
+    <img class="ico" src="../../public/from_site_logo.png" />
     <form
       @submit.prevent.stop="onSubmit"
       @reset.prevent.stop="onReset"
@@ -9,7 +10,8 @@
         ref="codeRef"
         filled
         v-model="code"
-        label="Código: *"
+        type="number"
+        label="Código:"
         lazy-rules
         :rules="codeRules"
       />
@@ -18,7 +20,7 @@
         ref="nameRef"
         filled
         v-model="name"
-        label="Nombre del Núcleo: *"
+        label="Nombre del Núcleo:"
         lazy-rules
         :rules="nameRules"
       />
@@ -28,7 +30,7 @@
         filled
         type="number"
         v-model="district"
-        label="Distrito: *"
+        label="Distrito:"
         lazy-rules
         :rules="districtRules"
       />
@@ -37,7 +39,7 @@
         ref="areaRef"
         filled
         v-model="area"
-        label="Area Política: *"
+        label="Area Política:"
         lazy-rules
         :rules="districtRules"
       />
@@ -46,7 +48,7 @@
         ref="sectorRef"
         filled
         v-model="sector"
-        label="Sector: *"
+        label="Sector:"
         lazy-rules
         :rules="areaRules"
       />
@@ -55,12 +57,12 @@
         ref="subordinateRef"
         filled
         v-model="subordinate"
-        label="Subordinado a: *"
+        label="Subordinado a:"
         lazy-rules
         :rules="subordinateRules"
       />
 
-      <div>
+      <div class="btns">
         <q-btn label="Submit" type="submit" color="primary" />
         <q-btn
           label="Reset"
@@ -85,21 +87,52 @@ export default {
     const name = ref(null);
     const nameRef = ref(null);
 
-    const age = ref(null);
-    const ageRef = ref(null);
+    const code = ref(null);
+    const codeRef = ref(null);
+
+    const district = ref(null);
+    const districtRef = ref(null);
+
+    const area = ref(null);
+    const areaRef = ref(null);
+
+    const sector = ref(null);
+    const sectorRef = ref(null);
+
+    const subordinate = ref(null);
+    const subordinateRef = ref(null);
 
     const accept = ref(false);
 
     return {
+      code,
+      codeRef,
+      codeRules: [(val) => (val && val.length > 0) || "Please type something"],
+
       name,
       nameRef,
       nameRules: [(val) => (val && val.length > 0) || "Please type something"],
 
-      age,
-      ageRef,
-      ageRules: [
-        (val) => (val !== null && val !== "") || "Please type your age",
-        (val) => (val > 0 && val < 100) || "Please type a real age",
+      district,
+      districtRef,
+      districtRules: [
+        (val) => (val && val.length > 0) || "Please type something",
+      ],
+
+      area,
+      areaRef,
+      areaRules: [(val) => (val && val.length > 0) || "Please type something"],
+
+      sector,
+      sectorRef,
+      sectorRules: [
+        (val) => (val && val.length > 0) || "Please type something",
+      ],
+
+      subordinate,
+      subordinateRef,
+      subordinateRules: [
+        (val) => (val && val.length > 0) || "Please type something",
       ],
 
       accept,
@@ -137,7 +170,21 @@ export default {
 
 <style>
 .gutter-md {
-  margin-top: 0em;
   margin-left: 45%;
+  margin-top: 1em;
+}
+.ico {
+  margin-left: 660px;
+}
+.q-pa-md {
+  max-height: 1000px;
+  max-width: 1000px;
+}
+
+.q-input {
+  margin-top: 10px;
+}
+.btns {
+  margin-top: 5px;
 }
 </style>
