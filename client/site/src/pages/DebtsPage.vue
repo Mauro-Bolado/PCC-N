@@ -46,7 +46,7 @@ const columns = [
     name: "militant_name",
     align: "center",
     label: "Nombre",
-    field: "militant_name",
+    field: "name",
     sortable: true,
   },
   {

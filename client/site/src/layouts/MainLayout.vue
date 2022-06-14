@@ -6,9 +6,9 @@
 
         <q-toolbar-title>
           <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" />
+            <img src="../../public/from_site_logo.png" />
           </q-avatar>
-          Title
+          Sitio Administrativo UH PCC
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
@@ -32,7 +32,7 @@
           </q-item>
           <q-item clickable v-ripple>
             <q-item-section>
-              <a href="#/debts">
+              <a href="#/debt">
                 <q-item-label overline>ATRASOS</q-item-label>
                 <q-item-label>Item with caption</q-item-label>
               </a>
@@ -40,7 +40,7 @@
           </q-item>
           <q-item clickable v-ripple>
             <q-item-section>
-              <a href="#/cores">
+              <a href="#/core">
                 <q-item-label overline>NUCLEOS</q-item-label>
                 <q-item-label>Item with caption</q-item-label>
               </a>

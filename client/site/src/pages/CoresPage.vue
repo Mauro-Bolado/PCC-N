@@ -14,6 +14,7 @@
       >
         <template v-slot:top>
           <q-btn
+            class="add"
             color="primary"
             :disable="loading"
             label="Agregar"
@@ -55,7 +56,7 @@
 <script>
 import { defineComponent } from "vue";
 import { ref } from "vue";
-import axios from "src/boot/axios";
+import axios from "axios";
 import MilitantsPageVue from "./MilitantsPage.vue";
 
 const columns = [
@@ -71,7 +72,7 @@ const columns = [
     name: "core_name",
     align: "center",
     label: "Nombre",
-    field: "core_name",
+    field: (row) => row.name,
     sortable: true,
   },
   {
@@ -131,8 +132,19 @@ export default defineComponent({
           console.log(err);
         });
     },
-    addRow() {},
-    removeRow() {},
+    reloadPage() {
+      window.location.reload();
+    },
+    addRow() {
+      window.open("./#/addcore");
+    },
+    removeRow() {
+      response = axios.delete(
+        "http://localhost:8000/pcc/core/" + this.selected[0]["code"] + "/"
+      );
+      console.log(response);
+      window.location.reload();
+    },
     modifyRow() {},
   },
   created() {
@@ -158,7 +170,7 @@ export default defineComponent({
 
   td:first-child
     /* bg color is important for td; just specify one */
-    background-color: $primary !important
+    background-color: $secondary !important
 
   tr th
     position: sticky

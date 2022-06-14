@@ -41,7 +41,7 @@ class Core(models.Model):
         return militant
 
     def __str__(self) -> str:
-        return self.core_name
+        return self.name
 
     class Meta:
         db_table = 'core'    
@@ -124,7 +124,7 @@ class Militant(models.Model):
         return arrears_fees
 
     def __str__(self) -> str:
-        return self.militant_name
+        return self.name
 
     class Meta:
         db_table = 'Militant'
@@ -157,7 +157,7 @@ class PaymentDeclaration(models.Model):
     @staticmethod
     def real_payment_declaration(ci):
         declarations_query = PaymentDeclaration.objects.filter(
-            payment_militant=ci).order_by('-year', '-month')
+            militant=ci).order_by('-year', '-month')
 
         declarations = []
 
@@ -202,7 +202,7 @@ class Task(models.Model):
         db_table = 'Task'
 
     def __str__(self) -> str:
-        return self.task_name + ' ' + self.orientation
+        return self.name + ' ' + self.orientation
 
 
 class Participant(models.Model):
@@ -216,4 +216,4 @@ class Participant(models.Model):
         unique_together = (('militant', 'task'))
 
     def __str__(self) -> str:
-        return self.militant.name + ' ' + self.task.namels
+        return self.militant.name + ' ' + self.task.name

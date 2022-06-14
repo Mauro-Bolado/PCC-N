@@ -153,7 +153,7 @@ class Core_APIView_Detail(APIView):
 
     def get(self, request, pk, format=None):
         core = self.get_queryset(pk)
-        serializer = CoreSerializer(core)
+        serializer = CoreDetailSerializer(core)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, pk, format=None):

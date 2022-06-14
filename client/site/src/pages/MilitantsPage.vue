@@ -63,14 +63,13 @@ const columns = [
     label: "No. Identidad",
     align: "left",
     field: "ci",
-    format: (val) => `${val}`,
     sortable: true,
   },
   {
     name: "militant_name",
     align: "center",
     label: "Nombre",
-    field: "militant_name",
+    field: "name",
     sortable: true,
   },
   {
@@ -143,7 +142,7 @@ export default defineComponent({
 
   td:first-child
     /* bg color is important for td; just specify one */
-    background-color: $primary !important
+    background-color: $secondary !important
 
   tr th
     position: sticky

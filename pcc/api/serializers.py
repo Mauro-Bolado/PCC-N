@@ -49,6 +49,13 @@ class CoreSerializer(serializers.ModelSerializer):
         fields = ['code', 'name', 'district', 'political_area',
                   'sector', 'subordinate']
 
+class CoreDetailSerializer(serializers.ModelSerializer):
+    militants = MilitantSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Core
+        fields = ['code', 'name', 'district', 'political_area',
+                  'sector', 'subordinate', 'militants']
 
 class MilitantDeclarationsSerializer(serializers.ModelSerializer):
     payment_declaration = PaymentDeclarationSerializer(
